@@ -1,1 +1,15 @@
 ﻿*.key*
+# Environment variables (keep secrets out of git)
+.env
+.env.local
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+
+# Build / IDE outputs
+dist/
+build/
+.vscode/
+.idea/
