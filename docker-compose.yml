@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Database Service (using your custom Dockerfile)
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dietitian-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dietitian_db
+      POSTGRES_USER: black
+      POSTGRES_PASSWORD: "12345"
+    restart: always
+
+  # Python FastAPI Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: dietitian-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://black:12345@db:5432/dietitian_db
+    depends_on:
+      - db
+    restart: always
