@@ -36,4 +36,4 @@ jobs:
           context: .
           file: ./Dockerfile.api
           push: true
-          tags: ghcr.io/${{ env.REPO_NAME }}/dietitian-api:latest
+          tags: ghcr.io/${{ env.REPO_NAME }}:latest
