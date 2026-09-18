@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  # Database Service (using your custom Dockerfile)
+  # Database Service using existing Dockerfile
   db:
     build:
       context: .
@@ -13,9 +11,11 @@ services:
       POSTGRES_DB: dietitian_db
       POSTGRES_USER: black
       POSTGRES_PASSWORD: "12345"
+    networks:
+      - dietitian-net
     restart: always
 
-  # Python FastAPI Service
+  # FastAPI Service using Dockerfile.api
   api:
     build:
       context: .
@@ -27,4 +27,11 @@ services:
       DATABASE_URL: postgresql://black:12345@db:5432/dietitian_db
     depends_on:
       - db
+    networks:
+      - dietitian-net
     restart: always
+
+# Custom user-defined network allowing containers to resolve each other by name
+networks:
+  dietitian-net:
+    driver: bridge

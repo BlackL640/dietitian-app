@@ -1,0 +1,39 @@
+Dietitian App- Python REST API Specification
+Project:Dietitian & Nutrition Management System
+Deliverable:Day 1 - Backend API Blueprint
+
+1. Authentication, Administration & Practice Setup
+* POST /api/v1/auth/register/dietitian - Register a dietitian account (Initial status: PENDING)
+* POST /api/v1/auth/register/client - Register a client account under a dietitian
+* POST /api/v1/auth/login - Authenticate users and issue JWT tokens
+* POST /api/v1/admin/approvals - Admin endpoint to review and set dietitian status (APPROVED, REJECTED, SUSPENDED)
+* POST /api/v1/branches - Add practice branches linked to a primary business
+
+2. Client Health, Life Stage & Clinical History
+* GET /api/v1/clients/{client_id}/profile - Fetch client bio, medical conditions, and life stage
+* POST /api/v1/clients/{client_id}/pregnancy - Create or update pregnancy parameters
+* POST /api/v1/clients/{client_id}/lactation - Log active lactation states
+* POST /api/v1/clients/{client_id}/allergies - Map client allergies and severity levels
+* POST /api/v1/clients/{client_id}/medical-conditions - Add diagnoses and ICD codes
+
+3. Clinical Labs & Daily Progress Logs
+* POST /api/v1/clients/{client_id}/metrics - Log continuous lab metrics (HbA1c, Fasting Blood Glucose, BP)
+* GET /api/v1/clients/{client_id}/metrics - Fetch historical lab logs for trend analysis
+* POST /api/v1/clients/{client_id}/progress - Log daily health data (weight, macros, calories, steps, sleep)
+* GET /api/v1/clients/{client_id}/progress - Retrieve progress history for reporting
+
+4. Appointments & Goals
+* POST /api/v1/appointments - Schedule a dietitian consultation
+* GET /api/v1/appointments - Fetch scheduled appointments for a dietitian or client
+* POST /api/v1/goals - Set client target metrics
+
+5. Foods, Recipes & Meal Planning
+* GET /api/v1/foods - Query food item database, macronutrients, and glycemic index
+* POST /api/v1/recipes - Create recipes with detailed ingredients and proportions
+* POST /api/v1/meal-plans - Generate multi-day structured meal plans tagged by diet_type
+* GET /api/v1/meal-plans/{meal_plan_id} - Retrieve full meal plan breakdown by days and meals
+
+6. AI Engine & Human-in-the-Loop Workflow
+* POST /api/v1/ai/generate-plan - Trigger AI engine to construct a plan draft
+* GET /api/v1/ai/recommendations/pending - Fetch AI plans awaiting dietitian review
+* PATCH /api/v1/ai/recommendations/{recommendation_id} - Dietitian review action (APPROVED, MODIFIED, REJECTED)
