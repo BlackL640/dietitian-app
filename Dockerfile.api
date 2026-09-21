@@ -9,7 +9,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Default fallback port if PORT isn't set by host
 ENV PORT=8000
-EXPOSE ${PORT}
 
-CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT}"]
+# Optional documentation entry
+EXPOSE 8000
+
+# Use $PORT directly without 'sh -c' wrapping so signals route cleanly
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]
