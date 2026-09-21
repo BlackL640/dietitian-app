@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 import uuid
@@ -7,7 +8,7 @@ app = FastAPI(
     title="Dietitian & Nutrition Management System",
     description="Full Implementation: Sections 1 through 6 REST API Specification",
     version="1.0.0",
-    docs_url="/"  # Configures Swagger UI to load on the root URL
+    docs_url="/docs"  # Keeps Swagger UI at /docs
 )
 
 # --- IN-MEMORY DATABASE MOCKS ---
@@ -124,6 +125,17 @@ class RecommendationReview(BaseModel):
 
 
 # --- ROUTE HANDLERS ---
+
+# Redirect root '/' to '/docs' so visiting the site opens Swagger UI directly
+@app.get("/", include_in_schema=False)
+def root_redirect():
+    return RedirectResponse(url="/docs")
+
+# Health check route that appears in Swagger UI under "Health Check"
+@app.get("/health", tags=["Health Check"])
+def read_root():
+    return {"status": "online", "message": "Dietitian API Service Running..."}
+
 
 # --- 1. AUTHENTICATION, ADMINISTRATION & PRACTICE SETUP ---
 
