@@ -6,7 +6,8 @@ import uuid
 app = FastAPI(
     title="Dietitian & Nutrition Management System",
     description="Full Implementation: Sections 1 through 6 REST API Specification",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/"  # Configures Swagger UI to load on the root URL
 )
 
 # --- IN-MEMORY DATABASE MOCKS ---
@@ -123,11 +124,6 @@ class RecommendationReview(BaseModel):
 
 
 # --- ROUTE HANDLERS ---
-
-@app.get("/", tags=["Health Check"])
-def read_root():
-    return {"status": "online", "message": "Dietitian API Service Running..."}
-
 
 # --- 1. AUTHENTICATION, ADMINISTRATION & PRACTICE SETUP ---
 
