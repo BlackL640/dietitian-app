@@ -1,4 +1,4 @@
-name: Day 3 - GHCR Docker Package Workflow
+name: Day 3 - GHCR Docker Package & OCI Deploy Workflow
 
 on:
   push:
@@ -38,3 +38,19 @@ jobs:
           file: ./Dockerfile.api
           push: true
           tags: ghcr.io/${{ env.REPO_NAME }}:latest
+
+  deploy:
+    needs: build-and-publish  # Runs only after the Docker image is built and pushed
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Oracle Cloud Instance via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.OCI_HOST }}
+          username: ubuntu  # Change to 'opc' if you use Oracle Linux
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            cd dietitian-app
+            git pull origin main
+            docker compose up --build -d
