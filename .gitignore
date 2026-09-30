@@ -13,3 +13,7 @@ dist/
 build/
 .vscode/
 .idea/
+
+.env
+__pycache__/
+*.pyc

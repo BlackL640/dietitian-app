@@ -17,8 +17,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Lowercase Repository Name
+        shell: bash
         run: |
-          echo "REPO_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+          echo "REPO_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

@@ -1,21 +1,35 @@
 services:
-  # Database Service using existing Dockerfile
   db:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: dietitian-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-black}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-12345}
+      POSTGRES_DB: ${POSTGRES_DB:-dietitian_db}
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_DB: dietitian_db
-      POSTGRES_USER: black
-      POSTGRES_PASSWORD: "12345"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - dietitian-net
     restart: always
 
-  # FastAPI Service using Dockerfile.api
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    container_name: dietitian-mcp-gateway
+    ports:
+      - "8811:8811"
+    command:
+      - --transport=streaming
+      - --port=8811
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - dietitian-net
+    restart: always
+
   api:
     build:
       context: .
@@ -24,14 +38,22 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://black:12345@db:5432/dietitian_db
+      DATABASE_URL: ${DATABASE_URL:-postgresql://black:12345@db:5432/dietitian_db}
+      MCPGATEWAY_URL: ${MCPGATEWAY_URL:-http://mcp-gateway:8811}
+      MODEL_RUNNER_URL: http://host.docker.internal:11434/v1
+      MODEL_NAME: ${MODEL_NAME:-ai/qwen3:8B-Q4_0}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - db
+      - mcp-gateway
     networks:
       - dietitian-net
     restart: always
 
-# Custom user-defined network allowing containers to resolve each other by name
 networks:
   dietitian-net:
     driver: bridge
+
+volumes:
+  postgres_data:
